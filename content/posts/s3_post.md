@@ -12,7 +12,7 @@ im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i d
 
 ## create s3 bucket from aws cli 
 test
-
+2
 
 <!-- if you copy from zola site it is missing a comma and will flag a syntax error 
  - add s3 mb cmds also include website endpoint 
