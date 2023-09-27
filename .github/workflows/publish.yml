@@ -18,6 +18,9 @@ jobs:
           
       - name: Build
         run: zola build
+
+      - name: list dir 
+        run: ls -R 
         
       - name: deploy to s3 bucket
         uses: reggionick/s3-deploy@v4
