@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+Allow: /
+Sitemap: http://vainfaith.s3-website-us-west-1.amazonaws.com/sitemap.xml

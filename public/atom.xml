@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>vain</title>
+    <link href="http://vainfaith.s3-website-us-west-1.amazonaws.com/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="http://vainfaith.s3-website-us-west-1.amazonaws.com"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2023-09-28T00:00:00+00:00</updated>
+    <id>http://vainfaith.s3-website-us-west-1.amazonaws.com/atom.xml</id>
+    <entry xml:lang="en">
+        <title>s3 static website with zola</title>
+        <published>2023-09-28T00:00:00+00:00</published>
+        <updated>2023-09-28T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="http://vainfaith.s3-website-us-west-1.amazonaws.com/posts/s3-post/" type="text/html"/>
+        <id>http://vainfaith.s3-website-us-west-1.amazonaws.com/posts/s3-post/</id>
+        
+        <content type="html">&lt;h2 id=&quot;wtf-is-zola&quot;&gt;wtf is zola&lt;&#x2F;h2&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.getzola.org&#x2F;&quot;&gt;zola&lt;&#x2F;a&gt; is a single-executable application wriiten in rust. it integrates a wide array of features inlcuding sass compilation and syntax highlighting, to streamline development. the content of the website is authored in &lt;a href=&quot;https:&#x2F;&#x2F;commonmark.org&#x2F;&quot;&gt;common mark&lt;&#x2F;a&gt;, a universally compatible markdown specification. &lt;&#x2F;p&gt;
+&lt;h2 id=&quot;install-zola&quot;&gt;install zola&lt;&#x2F;h2&gt;
+&lt;p&gt;im currently running &lt;a href=&quot;https:&#x2F;&#x2F;pop.system76.com&#x2F;&quot;&gt;pop_os&lt;&#x2F;a&gt; 22.04 LTS and since i do not use flatpak or snap i have to unpack the debian package from their &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;barnumbirr&#x2F;zola-debian&quot;&gt;gh page&lt;&#x2F;a&gt;. this is pretty easy just visit the page and install the release that matches your systems architecture. i installed the bullseye v0.17.2-1 package and unpacked it by running &lt;code&gt;sudo dpkg -i zola_0.17.2-1_amd64_bullseye.deb&lt;&#x2F;code&gt; and now i can run the &lt;code&gt;zola&lt;&#x2F;code&gt; cmd on my machine anywhere. &lt;code&gt;zola init&lt;&#x2F;code&gt; will populate the current directory if it is empty with the exclusion of hidden files or &lt;code&gt;zola init &amp;lt;your-dir&amp;gt;&lt;&#x2F;code&gt; will populate the specified directory only if the directory is empty. (the --force flag can be passed to both cmds to populate the directory despite the files)&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;aws-stuff&quot;&gt;aws stuff&lt;&#x2F;h2&gt;
+&lt;p&gt;an s3 bucket can be made directly from the console but the &lt;a href=&quot;https:&#x2F;&#x2F;aws.amazon.com&#x2F;cli&#x2F;&quot;&gt;aws cli&lt;&#x2F;a&gt; can create and configure an s3 bucket for static website hosting. the &lt;a href=&quot;https:&#x2F;&#x2F;awscli.amazonaws.com&#x2F;v2&#x2F;documentation&#x2F;api&#x2F;latest&#x2F;reference&#x2F;s3&#x2F;mb.html&quot;&gt;s3 mb&lt;&#x2F;a&gt; cmd will create a new bucket &lt;code&gt;aws s3 mb s3:&#x2F;&#x2F;&amp;lt;bucket-name&amp;gt;&lt;&#x2F;code&gt;. in the aws console go to the newly created s3 bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable &#x27;block all public access&#x27;. in the &#x27;bucket policy&#x27; tab add &lt;a href=&quot;http:&#x2F;&#x2F;vainfaith.s3-website-us-west-1.amazonaws.com&#x2F;posts&#x2F;s3-post&#x2F;#bucket-policy&quot;&gt;bucket-policy&lt;&#x2F;a&gt; which allows access to the buckets resources or else your pages will return a 403. go to iam &amp;gt; policies and in JSON create a &lt;a href=&quot;http:&#x2F;&#x2F;vainfaith.s3-website-us-west-1.amazonaws.com&#x2F;posts&#x2F;s3-post&#x2F;#iam-policy&quot;&gt;new policy&lt;&#x2F;a&gt; with your bucket name. then go to iam &amp;gt; users and create a new user with the attached policy for its permissions. select &#x27;create access key&#x27; and choose cli for its permissions. &lt;&#x2F;p&gt;
+&lt;h3 id=&quot;iam-policy&quot;&gt;iam-policy&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#0f1419;color:#bfbab0;&quot;&gt;&lt;code&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;Version&amp;quot;: &amp;quot;2012-10-17&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;	&amp;quot;Statement&amp;quot;: [{
+&lt;&#x2F;span&gt;&lt;span&gt;		&amp;quot;Sid&amp;quot;: &amp;quot;AccessToWebsiteBuckets&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;		&amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;		&amp;quot;Action&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;s3:PutBucketWebsite&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;s3:PutObject&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;s3:PutObjectAcl&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;s3:GetObject&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;s3:ListBucket&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;s3:DeleteObject&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;		],
+&lt;&#x2F;span&gt;&lt;span&gt;		&amp;quot;Resource&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;arn:aws:s3:::Bucket-Name&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;			&amp;quot;arn:aws:s3:::Bucket-Name&#x2F;*&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;		]    
+&lt;&#x2F;span&gt;&lt;span&gt;    }]
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;bucket-policy&quot;&gt;bucket-policy&lt;&#x2F;h3&gt;
+&lt;pre style=&quot;background-color:#0f1419;color:#bfbab0;&quot;&gt;&lt;code&gt;&lt;span&gt;{
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;Version&amp;quot;: &amp;quot;2012-10-17&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;    &amp;quot;Statement&amp;quot;: [
+&lt;&#x2F;span&gt;&lt;span&gt;        {
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;Sid&amp;quot;: &amp;quot;AddPerm&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;Effect&amp;quot;: &amp;quot;Allow&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;Principal&amp;quot;: &amp;quot;*&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;Action&amp;quot;: &amp;quot;s3:GetObject&amp;quot;,
+&lt;&#x2F;span&gt;&lt;span&gt;            &amp;quot;Resource&amp;quot;: &amp;quot;arn:aws:s3:::Bucket-Name&#x2F;*&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;        }
+&lt;&#x2F;span&gt;&lt;span&gt;    ]
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;!-- if you copy from zola site it is missing a comma and will flag a syntax error 
+ - add s3 mb cmds also include website endpoint 
+ - add custom iam role permissions in code block
+ - duckdns docker compose  
+ - add new user specific for the iam role and gh-actions allows for website access of the bucket
+ - setup actions secrets in github with new cli user --&gt;
+</content>
+        
+    </entry>
+</feed>
