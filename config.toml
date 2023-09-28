@@ -1,4 +1,3 @@
-base_url = "https://example.com"
 title = "vain"
 build_search_index = false
 generate_feed = true
