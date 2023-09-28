@@ -28,4 +28,4 @@ jobs:
           folder: public
           bucket: ${{ secrets.S3_BUCKET }}
           private: true
-          bucket-region: us-west-1
+          bucket-region: ${{ secrets.AWS_DEFAULT_REGION }}
