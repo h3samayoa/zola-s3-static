@@ -1,16 +1,19 @@
 +++
-title = "s3 static website with zola"
-date = "2023-09-28"
+title = "static website"
+date = "2023-10-12"
 +++
 
 # wtf is zola
 [zola](https://www.getzola.org/) is a single-executable application wriiten in rust. it integrates a wide array of features inlcuding sass compilation and syntax highlighting, to streamline development. the content of the website is authored in [common mark](https://commonmark.org/), a universally compatible markdown specification. 
 
 ## install zola 
-im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i do not use flatpak or snap i have to unpack the debian package from their [gh page](https://github.com/barnumbirr/zola-debian). this is pretty easy just visit the page and install the release that matches your systems architecture. i installed the bullseye v0.17.2-1 package and unpacked it by running `sudo dpkg -i zola_0.17.2-1_amd64_bullseye.deb` and now i can run the `zola` cmd on my machine anywhere. `zola init` will populate the current directory if it is empty with the exclusion of hidden files or `zola init <your-dir>` will populate the specified directory only if the directory is empty. (the --force flag can be passed to both cmds to populate the directory despite the files)
+im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i do not use flatpak or snap i have to unpack the debian package from their [gh page](https://github.com/barnumbirr/zola-debian). this is pretty easy just visit the page and install the release that matches your systems architecture. run `wget https://github.com/barnumbirr/zola-debian/releases/download/v0.17.2-1/zola_0.17.2-1_amd64_bullseye.deb` to install the debian bullseye v0.17.2-1 package and unpack it by running `sudo dpkg -i zola_0.17.2-1_amd64_bullseye.deb` and now i can run the `zola` cmd on my machine anywhere. `zola init` will populate the current directory if it is empty with the exclusion of hidden files or `zola init <your-dir>` will populate the specified directory only if the directory is empty. (the --force flag can be passed to both cmds to populate the directory despite the files).
 
-# aws stuff
-an s3 bucket can be made directly from the console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. the [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd will create a new bucket `aws s3 mb s3://<bucket-name>`. in the aws console go to the newly created s3 bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources or else your pages will return a 403. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
+# cloudflare setup
+create a [cloudflare](https://www.cloudflare.com/) account and register a new domain. we are going to use this domain name for our s3 buckets. 
+
+# aws setup 
+an s3 bucket can be made directly from the s3 console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. we will use [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd to create our sub/apex domain sub: `aws s3 mb s3://www.<bucket-name>` apex: `aws s3 mb s3://<bucket-name>`. in the aws console go to the newly created subdomain bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources (or else your pages will return a 403) and denies direct access to the s3 enpoint and only allows access to cloudflare servers. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
 
 <!-- 
   add enabling static website hosting for both buckets  
@@ -49,7 +52,34 @@ an s3 bucket can be made directly from the console but the [aws cli](https://aws
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::Bucket-Name/*"
+            "Resource": "arn:aws:s3:::Bucket-Name/*",
+            "Condition": {
+                "IpAddress": {
+                    "aws:SourceIp": [
+                        "173.245.48.0/20",
+                        "103.21.244.0/22",
+                        "103.22.200.0/22",
+                        "103.31.4.0/22",
+                        "141.101.64.0/18",
+                        "108.162.192.0/18",
+                        "190.93.240.0/20",
+                        "188.114.96.0/20",
+                        "197.234.240.0/22",
+                        "198.41.128.0/17",
+                        "162.158.0.0/15",
+                        "104.16.0.0/12",
+                        "172.64.0.0/13",
+                        "131.0.72.0/22",
+                        "2400:cb00::/32",
+                        "2606:4700::/32",
+                        "2803:f800::/32",
+                        "2405:b500::/32",
+                        "2405:8100::/32",
+                        "2a06:98c0::/29",
+                        "2c0f:f248::/32"
+                    ]
+                }
+            }
         }
     ]
 }
@@ -83,7 +113,7 @@ jobs:
         
       - name: deploy to s3 bucket
         run: |
-            aws s3 sync ./public s3://www.fwvain.faith
+            aws s3 sync ./public s3://${{ secrets.S3_BUCKET }}
         env:
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

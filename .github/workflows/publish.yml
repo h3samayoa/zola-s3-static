@@ -21,7 +21,7 @@ jobs:
         
       - name: deploy to s3 bucket
         run: |
-          aws s3 sync ./public s3://www.fwvain.faith
+          aws s3 sync ./public s3://${{ secrets.S3_BUCKET }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
