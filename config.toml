@@ -1,4 +1,4 @@
-base_url = "http://vainfaith.s3-website-us-west-1.amazonaws.com"
+base_url = "http://www.fwvain.faith.s3-website-us-west-1.amazonaws.com"
 title = "vain"
 build_search_index = false
 generate_feed = true
