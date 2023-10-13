@@ -97,7 +97,10 @@ jobs:
  - add custom iam role permissions in code block
  - duckdns docker compose  
  - add new user specific for the iam role and gh-actions allows for website access of the bucket
- - setup actions secrets in github with new cli user -->
+ - setup actions secrets in github with new cli user 
+ - add cloudflare instructions and change gh actions workflow file example 
+ -->
+ 
 
 
 
