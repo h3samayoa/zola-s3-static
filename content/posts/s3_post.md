@@ -12,6 +12,10 @@ im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i d
 # aws stuff
 an s3 bucket can be made directly from the console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. the [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd will create a new bucket `aws s3 mb s3://<bucket-name>`. in the aws console go to the newly created s3 bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources or else your pages will return a 403. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
 
+<!-- 
+  add enabling static website hosting for both buckets  
+-->
+
 ## iam-policy 
 ```
 {
