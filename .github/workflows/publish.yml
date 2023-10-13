@@ -14,7 +14,7 @@ jobs:
       - name: install zola
         run: |
           wget https://github.com/getzola/zola/releases/download/v0.17.2/zola-v0.17.2-x86_64-unknown-linux-gnu.tar.gz
-          tar -xzf v0.17.2-x86_64-unknown-linux-gnu.tar.gz 
+          tar -xzf zola-v0.17.2-x86_64-unknown-linux-gnu.tar.gz 
 
       - name: build
         run: ./zola build
