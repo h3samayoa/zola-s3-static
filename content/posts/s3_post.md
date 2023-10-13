@@ -74,23 +74,20 @@ jobs:
         uses: actions/checkout@v4
         
       - name: install zola
-        uses: taiki-e/install-action@v2.18.15
-        with:
-          tool: zola@0.17.2
-          
-      - name: Build
-        run: zola build
+        run: |
+            wget https://github.com/getzola/zola/releases/download/v0.17.2/zola-v0.17.2-x86_64-unknown-linux-gnu.tar.gz
+            tar -xzf zola-v0.17.2-x86_64-unknown-linux-gnu.tar.gz 
+
+      - name: build 
+        run: ./zola build
         
       - name: deploy to s3 bucket
-        uses: reggionick/s3-deploy@v4
+        run: |
+            aws s3 sync ./public s3://www.fwvain.faith
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        with:
-          folder: public
-          bucket: ${{ secrets.S3_BUCKET }}
-          private: true
-          bucket-region: ${{ secrets.AWS_DEFAULT_REGION }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 ```
 <!-- if you copy from zola site it is missing a comma and will flag a syntax error 
  - add s3 mb cmds also include website endpoint 
