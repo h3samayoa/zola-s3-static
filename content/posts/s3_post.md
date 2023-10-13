@@ -13,7 +13,7 @@ im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i d
 create a [cloudflare](https://www.cloudflare.com/) account and register a new domain. we are going to use this domain name for our s3 buckets. 
 
 # aws setup 
-an s3 bucket can be made directly from the s3 console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. we will use [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd to create our sub/apex domain sub: `aws s3 mb s3://www.<bucket-name>` apex: `aws s3 mb s3://<bucket-name>`. in the aws console go to the newly created subdomain bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources (or else your pages will return a 403) and denies direct access to the s3 enpoint and only allows access to cloudflare servers. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
+an s3 bucket can be made directly from the s3 console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. we will use [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd to create our sub/apex domain sub: `aws s3 mb s3://www.<bucket-name>` apex: `aws s3 mb s3://<bucket-name>`. in the aws console go to the newly created subdomain bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources (or else your pages will return a 403) and denies direct access to the s3 endpoint and only allows access to cloudflare servers by configuring the cloudflare [ip adr]. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
 
 <!-- 
   add enabling static website hosting for both buckets  
@@ -35,8 +35,8 @@ an s3 bucket can be made directly from the s3 console but the [aws cli](https://
 			"s3:DeleteObject"
 		],
 		"Resource": [
-			"arn:aws:s3:::Bucket-Name",
-			"arn:aws:s3:::Bucket-Name/*"
+			"arn:aws:s3:::subdomain-bucket-Name",
+			"arn:aws:s3:::subdomain-bucket-Name/*"
 		]    
     }]
 }
