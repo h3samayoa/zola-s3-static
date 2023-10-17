@@ -123,4 +123,5 @@ jobs:
  - setup actions secrets in github with new cli user 
  - add cloudflare instructions and change gh actions workflow file example 
  -->
-
+# continue ?
+ensure the `base_url` is set in the config toml to the cloudflare domain if it is not the inline linking will be wrong when zola builds the website. future plans: to add a cloudflare cdn for static content and ssl certificate creation.   
