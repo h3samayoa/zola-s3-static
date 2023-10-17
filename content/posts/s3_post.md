@@ -13,7 +13,7 @@ im currently running [pop_os](https://pop.system76.com/) 22.04 LTS and since i d
 create a [cloudflare](https://www.cloudflare.com/) account and register a new domain. we are going to use this domain name for our s3 bucket names. 
 
 # aws setup 
-an s3 bucket can be made directly from the s3 console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. we will use the [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd to create our sub/apex domain (sub: `aws s3 mb s3://www.<bucket-name>` apex: `aws s3 mb s3://<bucket-name>`). in the aws console go to the newly created subdomain bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources (or else your pages will return a 403) and denies direct access to the s3 endpoint and only allows access to cloudflare servers by configuring the cloudflare [ip addresses](https://www.cloudflare.com/ips/) in our iam policies. go to iam > policies and in JSON create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
+an s3 bucket can be made directly from the s3 console but the [aws cli](https://aws.amazon.com/cli/) can create and configure an s3 bucket for static website hosting. we will use the [s3 mb](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/mb.html) cmd to create our sub/apex domain (sub: `aws s3 mb s3://www.<bucket-name>` apex: `aws s3 mb s3://<bucket-name>`). in the aws console go to the newly created subdomain bucket and in the properties tab enable static website hosting. make sure to point to the index.html file. go to the permissions tab and disable 'block all public access'. in the 'bucket policy' tab add [bucket-policy](@/posts/s3_post.md#bucket-policy) which allows access to the buckets resources (or else your pages will return a 403) and denies direct access to the s3 endpoint and only allows access to cloudflare servers by configuring the cloudflare [ip addresses](https://www.cloudflare.com/ips/) in our iam policies. go to iam > policies and in json create a [new iam policy](@/posts/s3_post.md#iam-policy) with your bucket name in the resources. then go to iam > users and create a new user with the attached policy for its permissions. select 'create access key' and choose cli for its permissions. 
 
 ## iam-policy 
 ```
@@ -31,8 +31,8 @@ an s3 bucket can be made directly from the s3 console but the [aws cli](https://
 			"s3:DeleteObject"
 		],
 		"Resource": [
-			"arn:aws:s3:::subdomain-bucket-Name",
-			"arn:aws:s3:::subdomain-bucket-Name/*"
+			"arn:aws:s3:::subdomain-bucket-name",
+			"arn:aws:s3:::subdomain-bucket-name/*"
 		]    
     }]
 }
@@ -48,7 +48,7 @@ an s3 bucket can be made directly from the s3 console but the [aws cli](https://
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::Bucket-Name/*",
+            "Resource": "arn:aws:s3:::bucket-name/*",
             "Condition": {
                 "IpAddress": {
                     "aws:SourceIp": [
@@ -81,8 +81,11 @@ an s3 bucket can be made directly from the s3 console but the [aws cli](https://
 }
 ```
 
+# configure cloudflare
+log into cloudflare and visit the dashboard to select the domain used to name the sub/apex domain buckets. go to dns > records and select the 'add a record' button in the 'dns management' box. set the type as `CNAME`, set name to `www`, and set the target as the s3 endpoint from the subdomain bucket with the exclusion of `https://` at the beginning then hit save. create a new record and set the type to cname, set the name value as your apex domain name e.g.: `fwvain.faith`, and finally set the value as the s3 endpoint from our apex domain bucket also with the exclusion of `https://` and hit save. since our s3 endpoint is not secured by tls we need to ensure our ssl/tls setting is set to `flexible` under ssl/tls > overview.  
+
 # gh actions 
-i use gh actions so i can manic post quicker with automatic deployments on merges to main. we need to set our repo secrets which is in the settings tab under the 'secrets and variables' dropdown. select 'actions' and 'new repository secret'. add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` using the keys we obtained from the previously created iam user. add `S3_BUCKET` with your subdomain bucket name as the value and finally add `AWS_DEFAULT_REGION` with the region your bucket is in. we now need to setup a new github action [workflow](@/posts/s3_post.md#gh-workflow), this workflow [checks-out](https://github.com/actions/checkout) your repository, uses [wget](https://linux.die.net/man/1/wget) to fetch the linux release of zola version 0.17.2 and download it, unpackages it using [tar](https://linux.die.net/man/1/tar) we use the `-x` flag to extract the files // the `-z` flag to filter the archive using gzip since its in the .gz file format // the `-f` flag to specify the file we are unpacking, runs the newly created `./zola build` cmd to build the 'public/' directory, and finally uses the [sync](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) cmd to sync our public/ directory with our subdomain bucket that utilizes the secrets we created earlier to deploy the public directory to our s3 bucket which will now be hosting our static website!  
+"i use gh actions so i can manic post quicker with automatic deployments on merges to main" - sum1. we need to set our repo secrets which is in the settings tab under the 'secrets and variables' dropdown. select 'actions' and 'new repository secret'. add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` using the keys we obtained from the previously created iam user. add `S3_BUCKET` with your subdomain bucket name as the value and finally add `AWS_DEFAULT_REGION` with the region your bucket is in. we now need to setup a new github action [workflow](@/posts/s3_post.md#gh-workflow), this workflow [checks-out](https://github.com/actions/checkout) your repository, uses [wget](https://linux.die.net/man/1/wget) to fetch the linux release of zola version 0.17.2 and download it, unpackages it using [tar](https://linux.die.net/man/1/tar) we use the `-x` flag to extract the files // the `-z` flag to filter the archive using gzip since its in the .gz file format // the `-f` flag to specify the file we are unpacking, runs the newly created `./zola build` cmd to build the 'public/' directory, and finally uses the [sync](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) cmd to sync our public/ directory with our subdomain bucket that utilizes the secrets we created earlier to deploy the public directory to our s3 bucket which will now be hosting our static website!  
 
 ## gh-workflow
 ```
@@ -120,11 +123,4 @@ jobs:
  - setup actions secrets in github with new cli user 
  - add cloudflare instructions and change gh actions workflow file example 
  -->
- 
-
-
-
-
-
-
 

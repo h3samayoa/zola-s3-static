@@ -8,8 +8,8 @@ hi im @vain. i am interested in:
 * linux ricing ([hyprland](https://hyprland.org/), [sway](https://swaywm.org/), picom, cava, waybar, lua, [wayland](https://wayland.freedesktop.org/)) 
 * linux from scratch
 * linux distros ([arch](https://archlinux.org/), manjaro, gentoo, slackware, [void](https://voidlinux.org/), tails, [freebsd](https://www.freebsd.org/))
-* open source (GNU, FOSS, etc.)
-* cybersecurity (tor, [librewolf](https://librewolf.net/), quantum cryptography, iptables, firewalld)
+* open source (gnu, foss, [librewolf](https://librewolf.net/))
+* cybersecurity (opsec, quantum cryptography, iptables, encyrption)
 * reverse engineering
 * devops ([terraform](https://www.terraform.io/), aws, gcp, azure, [tekton](https://tekton.dev/), [slsa](https://slsa.dev/), gh-actions, kubernetes)
 * risc-v 

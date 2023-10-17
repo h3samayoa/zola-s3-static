@@ -1,4 +1,4 @@
-name: Build and Publish to AWS
+name: zola build / publish to s3 
 on:
   push:
     branches:
