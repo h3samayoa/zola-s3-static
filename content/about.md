@@ -15,5 +15,5 @@ hi im @vain. i am interested in:
 * risc-v 
 * notes/editors ([nvim](https://neovim.io/), [doom emacs](https://github.com/doomemacs/doomemacs), [org roam emacs](https://www.orgroam.com/), vim)
 
-i mainly work with mlOps while also attending school for my bachelors in applied math. this blog is dedicated to my many side projects and my experiences with them.
+i mainly work with mlOps while also attending school for my bachelors in applied math. this blog is dedicated to my side projects and my experiences with them.
 
