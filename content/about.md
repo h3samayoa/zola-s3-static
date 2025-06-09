@@ -8,12 +8,12 @@ hi im @vain. i am interested in:
 * linux ricing ([hyprland](https://hyprland.org/), [sway](https://swaywm.org/), [wayland](https://wayland.freedesktop.org/)) 
 * linux from scratch
 * linux distros ([arch](https://archlinux.org/), manjaro, gentoo, slackware, [void](https://voidlinux.org/), tails, [freebsd](https://www.freebsd.org/))
-* open source (gnu, foss, [librewolf](https://librewolf.net/))
+* foss ([librewolf](https://librewolf.net/), nix)
 * cybersecurity (opsec, quantum cryptography, encyrption)
 * reverse engineering
 * devops ([terraform](https://www.terraform.io/), aws, gcp, azure, [tekton](https://tekton.dev/), [slsa](https://slsa.dev/), gh-actions, kubernetes)
 * risc-v 
 * notes/editors ([nvim](https://neovim.io/), [doom emacs](https://github.com/doomemacs/doomemacs), [org roam emacs](https://www.orgroam.com/), vim, vi)
 
-i am a devsecops engineer at schneider electric while also attending school for my bachelors in applied math. this blog is dedicated to my many side projects and my experiences with them.
+i mainly work with mlOps while also attending school for my bachelors in applied math. this blog is dedicated to my many side projects and my experiences with them.
 
